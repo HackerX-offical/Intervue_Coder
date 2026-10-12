@@ -89,20 +89,9 @@ npm run package-mac
 npm run package-win
 ```
 
-## License
+## Ethics
 
-This project is licensed under the **MIT**.
-
-Copyright © 2025 Suryanshu Nabheet.
-
-## Contributing
-
-Contributions are welcome! If you'd like to improve Intervue Coder, please fork the
-repository and submit a pull request.
-
----
-
-**Intervue Coder** — Engineered for Excellence by Suryanshu Nabheet.
+Use only on systems and content you are **authorized** to access. See [SECURITY.md](./SECURITY.md).
 
 ## License
 
