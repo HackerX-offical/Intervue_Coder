@@ -1,3 +1,5 @@
+import { commandKeyForPlatform } from './commandKey';
+
 // Get the platform safely
 const getPlatform = () => {
   try {
@@ -8,7 +10,7 @@ const getPlatform = () => {
 };
 
 // Platform-specific command key symbol
-export const COMMAND_KEY = getPlatform() === 'darwin' ? '⌘' : 'Ctrl';
+export const COMMAND_KEY = commandKeyForPlatform(getPlatform());
 
 // Helper to check if we're on Windows
 export const isWindows = getPlatform() === 'win32';
