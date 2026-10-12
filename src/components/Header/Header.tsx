@@ -32,9 +32,9 @@ export function Header({ currentLanguage, setLanguage, onOpenSettings }: HeaderP
       await window.electronAPI.updateConfig({
         apiKey: '',
       });
-      
+
       showToast('Success', 'Logged out successfully', 'success');
-      
+
       // Reload the app after a short delay
       setTimeout(() => {
         window.location.reload();
@@ -49,13 +49,15 @@ export function Header({ currentLanguage, setLanguage, onOpenSettings }: HeaderP
   const handleLanguageSelect = (lang: string) => {
     setLanguage(lang);
     setDropdownOpen(false);
-    
+
     // Also save the language preference to config
-    window.electronAPI.updateConfig({
-      language: lang
-    }).catch(error => {
-      console.error('Failed to save language preference:', error);
-    });
+    window.electronAPI
+      .updateConfig({
+        language: lang,
+      })
+      .catch((error) => {
+        console.error('Failed to save language preference:', error);
+      });
   };
 
   const toggleDropdown = () => {
@@ -63,7 +65,7 @@ export function Header({ currentLanguage, setLanguage, onOpenSettings }: HeaderP
   };
 
   // Find the current language object
-  const currentLangObj = LANGUAGES.find(lang => lang.value === currentLanguage) || LANGUAGES[0];
+  const currentLangObj = LANGUAGES.find((lang) => lang.value === currentLanguage) || LANGUAGES[0];
 
   return (
     <div className="bg-black p-2 border-b border-white/10 flex items-center justify-between">
@@ -81,7 +83,7 @@ export function Header({ currentLanguage, setLanguage, onOpenSettings }: HeaderP
               <ChevronDown className="h-4 w-4 text-white/70" />
             )}
           </button>
-          
+
           {dropdownOpen && (
             <div className="absolute z-10 mt-1 w-full rounded-md bg-black border border-white/10 shadow-lg">
               <div className="py-1">
@@ -103,7 +105,7 @@ export function Header({ currentLanguage, setLanguage, onOpenSettings }: HeaderP
           )}
         </div>
       </div>
-      
+
       <div className="flex items-center space-x-2">
         <Button
           variant="ghost"
@@ -115,7 +117,7 @@ export function Header({ currentLanguage, setLanguage, onOpenSettings }: HeaderP
           <Settings className="h-4 w-4 mr-1" />
           <span className="text-xs">Settings</span>
         </Button>
-        
+
         <Button
           variant="ghost"
           size="sm"

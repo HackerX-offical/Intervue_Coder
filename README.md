@@ -4,16 +4,24 @@
 
 > ## The Ultimate Interview Assistant
 >
-> Intervue Coder is a premium, powerful, and invisible desktop application designed to be your ultimate companion for technical interviews. Built with precision and privacy in mind, it provides real-time AI assistance, solution generation, and debugging capabilities right at your fingertips.
+> Intervue Coder is a premium, powerful, and invisible desktop application designed to
+> be your ultimate companion for technical interviews. Built with precision and privacy
+> in mind, it provides real-time AI assistance, solution generation, and debugging
+> capabilities right at your fingertips.
 
 ## Features
 
-- **100% Invisible Mode**: An undetectable window that bypasses screen sharing detection (Zoom, Discord, etc.).
-- **Multi-LLM Support**: Integrated with OpenAI, Anthropic (Claude), Gemini, OpenRouter, and Ollama (Local LLMs).
-- **Smart Vision**: Instantly extracts problem details from screenshots using advanced Vision models.
-- **Instant Solutions**: Generates optimized code solutions with detailed time & space complexity analysis.
+- **100% Invisible Mode**: An undetectable window that bypasses screen sharing detection
+  (Zoom, Discord, etc.).
+- **Multi-LLM Support**: Integrated with OpenAI, Anthropic (Claude), Gemini, OpenRouter,
+  and Ollama (Local LLMs).
+- **Smart Vision**: Instantly extracts problem details from screenshots using advanced
+  Vision models.
+- **Instant Solutions**: Generates optimized code solutions with detailed time & space
+  complexity analysis.
 - **Live Debugging**: Analyze errors and refine your code in real-time.
-- **Privacy First**: Your data stays local. API keys are stored securely on your machine.
+- **Privacy First**: Your data stays local. API keys are stored securely on your
+  machine.
 - **Custom Experience**: Fully adjustable window opacity, position, and zoom.
 
 ## Prerequisites
@@ -48,7 +56,8 @@
       stealth-run.bat
       ```
 
-    > **Note:** The window starts in **invisible mode**. Press `Ctrl+B` (or `Cmd+B` on Mac) to toggle visibility.
+    > **Note:** The window starts in **invisible mode**. Press `Ctrl+B` (or `Cmd+B` on
+    > Mac) to toggle visibility.
 
 4.  **Configure AI**
     - Open Settings.
@@ -88,8 +97,14 @@ Copyright © 2025 Suryanshu Nabheet.
 
 ## Contributing
 
-Contributions are welcome! If you'd like to improve Intervue Coder, please fork the repository and submit a pull request.
+Contributions are welcome! If you'd like to improve Intervue Coder, please fork the
+repository and submit a pull request.
 
 ---
 
 **Intervue Coder** — Engineered for Excellence by Suryanshu Nabheet.
+
+## License
+
+Licensed under the [HackerX License](./LICENSE). Redistributions must retain copyright,
+license text, and [NOTICE](./NOTICE) attribution per the license terms.

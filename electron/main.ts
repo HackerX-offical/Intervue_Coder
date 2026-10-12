@@ -1,16 +1,16 @@
-import { app, BrowserWindow, screen, shell, ipcMain } from "electron";
-import path from "path";
-import fs from "fs";
-import { initializeIpcHandlers } from "./ipcHandlers";
-import { ProcessingHelper } from "./ProcessingHelper";
-import { ScreenshotHelper } from "./ScreenshotHelper";
-import { ShortcutsHelper } from "./shortcuts";
-import { initAutoUpdater } from "./autoUpdater";
-import { configHelper } from "./ConfigHelper";
-import * as dotenv from "dotenv";
+import { app, BrowserWindow, screen, shell, ipcMain } from 'electron';
+import path from 'path';
+import fs from 'fs';
+import { initializeIpcHandlers } from './ipcHandlers';
+import { ProcessingHelper } from './ProcessingHelper';
+import { ScreenshotHelper } from './ScreenshotHelper';
+import { ShortcutsHelper } from './shortcuts';
+import { initAutoUpdater } from './autoUpdater';
+import { configHelper } from './ConfigHelper';
+import * as dotenv from 'dotenv';
 
 // Constants
-const isDev = process.env.NODE_ENV === "development";
+const isDev = process.env.NODE_ENV === 'development';
 
 // Application State
 const state = {
@@ -31,23 +31,23 @@ const state = {
   processingHelper: null as ProcessingHelper | null,
 
   // View and state management
-  view: "queue" as "queue" | "solutions" | "debug",
+  view: 'queue' as 'queue' | 'solutions' | 'debug',
   problemInfo: null as any,
   hasDebugged: false,
 
   // Processing events
   PROCESSING_EVENTS: {
-    UNAUTHORIZED: "processing-unauthorized",
-    NO_SCREENSHOTS: "processing-no-screenshots",
-    OUT_OF_CREDITS: "out-of-credits",
-    API_KEY_INVALID: "api-key-invalid",
-    INITIAL_START: "initial-start",
-    PROBLEM_EXTRACTED: "problem-extracted",
-    SOLUTION_SUCCESS: "solution-success",
-    INITIAL_SOLUTION_ERROR: "solution-error",
-    DEBUG_START: "debug-start",
-    DEBUG_SUCCESS: "debug-success",
-    DEBUG_ERROR: "debug-error",
+    UNAUTHORIZED: 'processing-unauthorized',
+    NO_SCREENSHOTS: 'processing-no-screenshots',
+    OUT_OF_CREDITS: 'out-of-credits',
+    API_KEY_INVALID: 'api-key-invalid',
+    INITIAL_START: 'initial-start',
+    PROBLEM_EXTRACTED: 'problem-extracted',
+    SOLUTION_SUCCESS: 'solution-success',
+    INITIAL_SOLUTION_ERROR: 'solution-error',
+    DEBUG_START: 'debug-start',
+    DEBUG_SUCCESS: 'debug-success',
+    DEBUG_ERROR: 'debug-error',
   } as const,
 };
 
@@ -55,8 +55,8 @@ const state = {
 export interface IProcessingHelperDeps {
   getScreenshotHelper: () => ScreenshotHelper | null;
   getMainWindow: () => BrowserWindow | null;
-  getView: () => "queue" | "solutions" | "debug";
-  setView: (view: "queue" | "solutions" | "debug") => void;
+  getView: () => 'queue' | 'solutions' | 'debug';
+  setView: (view: 'queue' | 'solutions' | 'debug') => void;
   getProblemInfo: () => any;
   setProblemInfo: (info: any) => void;
   getScreenshotQueue: () => string[];
@@ -64,9 +64,7 @@ export interface IProcessingHelperDeps {
   clearQueues: () => void;
   takeScreenshot: () => Promise<string>;
   getImagePreview: (filepath: string) => Promise<string>;
-  deleteScreenshot: (
-    path: string,
-  ) => Promise<{ success: boolean; error?: string }>;
+  deleteScreenshot: (path: string) => Promise<{ success: boolean; error?: string }>;
   setHasDebugged: (value: boolean) => void;
   getHasDebugged: () => boolean;
   PROCESSING_EVENTS: typeof state.PROCESSING_EVENTS;
@@ -78,7 +76,7 @@ export interface IShortcutsHelperDeps {
   getImagePreview: (filepath: string) => Promise<string>;
   processingHelper: ProcessingHelper | null;
   clearQueues: () => void;
-  setView: (view: "queue" | "solutions" | "debug") => void;
+  setView: (view: 'queue' | 'solutions' | 'debug') => void;
   isVisible: () => boolean;
   toggleMainWindow: () => void;
   moveWindowLeft: () => void;
@@ -92,17 +90,15 @@ export interface IIpcHandlerDeps {
   setWindowDimensions: (width: number, height: number) => void;
   getScreenshotQueue: () => string[];
   getExtraScreenshotQueue: () => string[];
-  deleteScreenshot: (
-    path: string,
-  ) => Promise<{ success: boolean; error?: string }>;
+  deleteScreenshot: (path: string) => Promise<{ success: boolean; error?: string }>;
   getImagePreview: (filepath: string) => Promise<string>;
   processingHelper: ProcessingHelper | null;
   PROCESSING_EVENTS: typeof state.PROCESSING_EVENTS;
   takeScreenshot: () => Promise<string>;
-  getView: () => "queue" | "solutions" | "debug";
+  getView: () => 'queue' | 'solutions' | 'debug';
   toggleMainWindow: () => void;
   clearQueues: () => void;
-  setView: (view: "queue" | "solutions" | "debug") => void;
+  setView: (view: 'queue' | 'solutions' | 'debug') => void;
   moveWindowLeft: () => void;
   moveWindowRight: () => void;
   moveWindowUp: () => void;
@@ -139,15 +135,10 @@ function initializeHelpers() {
     isVisible: () => state.isWindowVisible,
     toggleMainWindow,
     moveWindowLeft: () =>
-      moveWindowHorizontal((x) =>
-        Math.max(-(state.windowSize?.width || 0) / 2, x - state.step),
-      ),
+      moveWindowHorizontal((x) => Math.max(-(state.windowSize?.width || 0) / 2, x - state.step)),
     moveWindowRight: () =>
       moveWindowHorizontal((x) =>
-        Math.min(
-          state.screenWidth - (state.windowSize?.width || 0) / 2,
-          x + state.step,
-        ),
+        Math.min(state.screenWidth - (state.windowSize?.width || 0) / 2, x + state.step),
       ),
     moveWindowUp: () => moveWindowVertical((y) => y - state.step),
     moveWindowDown: () => moveWindowVertical((y) => y + state.step),
@@ -157,17 +148,17 @@ function initializeHelpers() {
 // Auth callback handler
 
 // Register the interview-coder protocol
-if (process.platform === "darwin") {
-  app.setAsDefaultProtocolClient("intervue-coder");
+if (process.platform === 'darwin') {
+  app.setAsDefaultProtocolClient('intervue-coder');
 } else {
-  app.setAsDefaultProtocolClient("intervue-coder", process.execPath, [
-    path.resolve(process.argv[1] || ""),
+  app.setAsDefaultProtocolClient('intervue-coder', process.execPath, [
+    path.resolve(process.argv[1] || ''),
   ]);
 }
 
 // Handle the protocol. In this case, we choose to show an Error Box.
 if (process.defaultApp && process.argv.length >= 2) {
-  app.setAsDefaultProtocolClient("intervue-coder", process.execPath, [
+  app.setAsDefaultProtocolClient('intervue-coder', process.execPath, [
     path.resolve(process.argv[1]),
   ]);
 }
@@ -178,7 +169,7 @@ const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
   app.quit();
 } else {
-  app.on("second-instance", (event, commandLine) => {
+  app.on('second-instance', (event, commandLine) => {
     // Someone tried to run a second instance, we should focus our window.
     if (state.mainWindow) {
       if (state.mainWindow.isMinimized()) state.mainWindow.restore();
@@ -218,8 +209,8 @@ async function createWindow(): Promise<void> {
       nodeIntegration: false,
       contextIsolation: true,
       preload: isDev
-        ? path.join(__dirname, "../dist-electron/preload.js")
-        : path.join(__dirname, "preload.js"),
+        ? path.join(__dirname, '../dist-electron/preload.js')
+        : path.join(__dirname, 'preload.js'),
       scrollBounce: true,
     },
     show: true,
@@ -228,12 +219,12 @@ async function createWindow(): Promise<void> {
     fullscreenable: false,
     hasShadow: false,
     opacity: 1.0, // Start with full opacity
-    backgroundColor: "#00000000",
+    backgroundColor: '#00000000',
     focusable: true,
     skipTaskbar: true,
-    type: "panel",
+    type: 'panel',
     paintWhenInitiallyHidden: true,
-    titleBarStyle: "hidden",
+    titleBarStyle: 'hidden',
     enableLargerThanScreen: true,
     movable: true,
   };
@@ -241,51 +232,45 @@ async function createWindow(): Promise<void> {
   state.mainWindow = new BrowserWindow(windowSettings);
 
   // Add more detailed logging for window events
-  state.mainWindow.webContents.on("did-finish-load", () => {
-    console.log("Window finished loading");
+  state.mainWindow.webContents.on('did-finish-load', () => {
+    console.log('Window finished loading');
   });
-  state.mainWindow.webContents.on(
-    "did-fail-load",
-    async (event, errorCode, errorDescription) => {
-      console.error("Window failed to load:", errorCode, errorDescription);
-      if (isDev) {
-        // In development, retry loading after a short delay
-        console.log("Retrying to load development server...");
-        setTimeout(() => {
-          state.mainWindow?.loadURL("http://localhost:54321").catch((error) => {
-            console.error("Failed to load dev server on retry:", error);
-          });
-        }, 1000);
-      }
-    },
-  );
+  state.mainWindow.webContents.on('did-fail-load', async (event, errorCode, errorDescription) => {
+    console.error('Window failed to load:', errorCode, errorDescription);
+    if (isDev) {
+      // In development, retry loading after a short delay
+      console.log('Retrying to load development server...');
+      setTimeout(() => {
+        state.mainWindow?.loadURL('http://localhost:54321').catch((error) => {
+          console.error('Failed to load dev server on retry:', error);
+        });
+      }, 1000);
+    }
+  });
 
   if (isDev) {
     // In development, load from the dev server
-    console.log("Loading from development server: http://localhost:54321");
-    state.mainWindow.loadURL("http://localhost:54321").catch((error) => {
-      console.error(
-        "Failed to load dev server, falling back to local file:",
-        error,
-      );
+    console.log('Loading from development server: http://localhost:54321');
+    state.mainWindow.loadURL('http://localhost:54321').catch((error) => {
+      console.error('Failed to load dev server, falling back to local file:', error);
       // Fallback to local file if dev server is not available
-      const indexPath = path.join(__dirname, "../dist/index.html");
-      console.log("Falling back to:", indexPath);
+      const indexPath = path.join(__dirname, '../dist/index.html');
+      console.log('Falling back to:', indexPath);
       if (fs.existsSync(indexPath)) {
         state.mainWindow.loadFile(indexPath);
       } else {
-        console.error("Could not find index.html in dist folder");
+        console.error('Could not find index.html in dist folder');
       }
     });
   } else {
     // In production, load from the built files
-    const indexPath = path.join(__dirname, "../dist/index.html");
-    console.log("Loading production build:", indexPath);
+    const indexPath = path.join(__dirname, '../dist/index.html');
+    console.log('Loading production build:', indexPath);
 
     if (fs.existsSync(indexPath)) {
       state.mainWindow.loadFile(indexPath);
     } else {
-      console.error("Could not find index.html in dist folder");
+      console.error('Could not find index.html in dist folder');
     }
   }
 
@@ -295,24 +280,24 @@ async function createWindow(): Promise<void> {
     state.mainWindow.webContents.openDevTools();
   }
   state.mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    console.log("Attempting to open URL:", url);
+    console.log('Attempting to open URL:', url);
     try {
       const parsedURL = new URL(url);
       const hostname = parsedURL.hostname;
-      const allowedHosts = ["google.com", "supabase.co"];
+      const allowedHosts = ['google.com', 'supabase.co'];
       if (
         allowedHosts.includes(hostname) ||
-        hostname.endsWith(".google.com") ||
-        hostname.endsWith(".supabase.co")
+        hostname.endsWith('.google.com') ||
+        hostname.endsWith('.supabase.co')
       ) {
         shell.openExternal(url);
-        return { action: "deny" }; // Do not open this URL in a new Electron window
+        return { action: 'deny' }; // Do not open this URL in a new Electron window
       }
     } catch (error) {
-      console.error("Invalid URL %d in setWindowOpenHandler: %d", url, error);
-      return { action: "deny" }; // Deny access as URL string is malformed or invalid
+      console.error('Invalid URL %d in setWindowOpenHandler: %d', url, error);
+      return { action: 'deny' }; // Deny access as URL string is malformed or invalid
     }
-    return { action: "allow" };
+    return { action: 'allow' };
   });
 
   // Enhanced screen capture resistance
@@ -321,14 +306,14 @@ async function createWindow(): Promise<void> {
   state.mainWindow.setVisibleOnAllWorkspaces(true, {
     visibleOnFullScreen: true,
   });
-  state.mainWindow.setAlwaysOnTop(true, "screen-saver", 1);
+  state.mainWindow.setAlwaysOnTop(true, 'screen-saver', 1);
 
   // Additional screen capture resistance settings
-  if (process.platform === "darwin") {
+  if (process.platform === 'darwin') {
     // Prevent window from being captured in screenshots
     state.mainWindow.setHiddenInMissionControl(true);
     state.mainWindow.setWindowButtonVisibility(false);
-    state.mainWindow.setBackgroundColor("#00000000");
+    state.mainWindow.setBackgroundColor('#00000000');
 
     // Prevent window from being included in window switcher
     state.mainWindow.setSkipTaskbar(true);
@@ -342,9 +327,9 @@ async function createWindow(): Promise<void> {
   state.mainWindow.webContents.setFrameRate(60);
 
   // Set up window listeners
-  state.mainWindow.on("move", handleWindowMove);
-  state.mainWindow.on("resize", handleWindowResize);
-  state.mainWindow.on("closed", handleWindowClosed);
+  state.mainWindow.on('move', handleWindowMove);
+  state.mainWindow.on('resize', handleWindowResize);
+  state.mainWindow.on('closed', handleWindowClosed);
 
   // Initialize window state
   const bounds = state.mainWindow.getBounds();
@@ -363,7 +348,7 @@ async function createWindow(): Promise<void> {
   state.mainWindow.showInactive(); // Use showInactive for consistency
 
   if (savedOpacity <= 0.1) {
-    console.log("Initial opacity too low, setting to 0 and hiding window");
+    console.log('Initial opacity too low, setting to 0 and hiding window');
     state.mainWindow.setOpacity(0);
     state.isWindowVisible = false;
   } else {
@@ -403,7 +388,7 @@ function hideMainWindow(): void {
     state.mainWindow.setIgnoreMouseEvents(true, { forward: true });
     state.mainWindow.setOpacity(0);
     state.isWindowVisible = false;
-    console.log("Window hidden, opacity set to 0");
+    console.log('Window hidden, opacity set to 0');
   }
 }
 
@@ -416,7 +401,7 @@ function showMainWindow(): void {
       });
     }
     state.mainWindow.setIgnoreMouseEvents(false);
-    state.mainWindow.setAlwaysOnTop(true, "screen-saver", 1);
+    state.mainWindow.setAlwaysOnTop(true, 'screen-saver', 1);
     state.mainWindow.setVisibleOnAllWorkspaces(true, {
       visibleOnFullScreen: true,
     });
@@ -425,14 +410,12 @@ function showMainWindow(): void {
     state.mainWindow.showInactive(); // Use showInactive instead of show+focus
     state.mainWindow.setOpacity(1); // Then set opacity to 1 after showing
     state.isWindowVisible = true;
-    console.log("Window shown with showInactive(), opacity set to 1");
+    console.log('Window shown with showInactive(), opacity set to 1');
   }
 }
 
 function toggleMainWindow(): void {
-  console.log(
-    `Toggling window. Current state: ${state.isWindowVisible ? "visible" : "hidden"}`,
-  );
+  console.log(`Toggling window. Current state: ${state.isWindowVisible ? 'visible' : 'hidden'}`);
   if (state.isWindowVisible) {
     hideMainWindow();
   } else {
@@ -444,10 +427,7 @@ function toggleMainWindow(): void {
 function moveWindowHorizontal(updateFn: (x: number) => number): void {
   if (!state.mainWindow) return;
   state.currentX = updateFn(state.currentX);
-  state.mainWindow.setPosition(
-    Math.round(state.currentX),
-    Math.round(state.currentY),
-  );
+  state.mainWindow.setPosition(Math.round(state.currentX), Math.round(state.currentY));
 }
 
 function moveWindowVertical(updateFn: (y: number) => number): void {
@@ -456,8 +436,7 @@ function moveWindowVertical(updateFn: (y: number) => number): void {
   const newY = updateFn(state.currentY);
   // Allow window to go 2/3 off screen in either direction
   const maxUpLimit = (-(state.windowSize?.height || 0) * 2) / 3;
-  const maxDownLimit =
-    state.screenHeight + ((state.windowSize?.height || 0) * 2) / 3;
+  const maxDownLimit = state.screenHeight + ((state.windowSize?.height || 0) * 2) / 3;
 
   // Log the current state and limits
   console.log({
@@ -472,10 +451,7 @@ function moveWindowVertical(updateFn: (y: number) => number): void {
   // Only update if within bounds
   if (newY >= maxUpLimit && newY <= maxDownLimit) {
     state.currentY = newY;
-    state.mainWindow.setPosition(
-      Math.round(state.currentX),
-      Math.round(state.currentY),
-    );
+    state.mainWindow.setPosition(Math.round(state.currentX), Math.round(state.currentY));
   }
 }
 
@@ -499,29 +475,23 @@ function setWindowDimensions(width: number, height: number): void {
 // Environment setup
 function loadEnvVariables() {
   if (isDev) {
-    console.log(
-      "Loading env variables from:",
-      path.join(process.cwd(), ".env"),
-    );
-    dotenv.config({ path: path.join(process.cwd(), ".env") });
+    console.log('Loading env variables from:', path.join(process.cwd(), '.env'));
+    dotenv.config({ path: path.join(process.cwd(), '.env') });
   } else {
-    console.log(
-      "Loading env variables from:",
-      path.join(process.resourcesPath, ".env"),
-    );
-    dotenv.config({ path: path.join(process.resourcesPath, ".env") });
+    console.log('Loading env variables from:', path.join(process.resourcesPath, '.env'));
+    dotenv.config({ path: path.join(process.resourcesPath, '.env') });
   }
-  console.log("Environment variables loaded for open-source version");
+  console.log('Environment variables loaded for open-source version');
 }
 
 // Initialize application
 async function initializeApp() {
   try {
     // Set custom cache directory to prevent permission issues
-    const appDataPath = path.join(app.getPath("appData"), "intervue-coder");
-    const sessionPath = path.join(appDataPath, "session");
-    const tempPath = path.join(appDataPath, "temp");
-    const cachePath = path.join(appDataPath, "cache");
+    const appDataPath = path.join(app.getPath('appData'), 'intervue-coder');
+    const sessionPath = path.join(appDataPath, 'session');
+    const tempPath = path.join(appDataPath, 'temp');
+    const cachePath = path.join(appDataPath, 'cache');
 
     // Create directories if they don't exist
     for (const dir of [appDataPath, sessionPath, tempPath, cachePath]) {
@@ -530,18 +500,16 @@ async function initializeApp() {
       }
     }
 
-    app.setPath("userData", appDataPath);
-    app.setPath("sessionData", sessionPath);
-    app.setPath("temp", tempPath);
-    app.setPath("cache", cachePath);
+    app.setPath('userData', appDataPath);
+    app.setPath('sessionData', sessionPath);
+    app.setPath('temp', tempPath);
+    app.setPath('cache', cachePath);
 
     loadEnvVariables();
 
     // Ensure a configuration file exists
     if (!configHelper.hasApiKey()) {
-      console.log(
-        "No API key found in configuration. User will need to set up.",
-      );
+      console.log('No API key found in configuration. User will need to set up.');
     }
 
     initializeHelpers();
@@ -560,15 +528,10 @@ async function initializeApp() {
       clearQueues,
       setView,
       moveWindowLeft: () =>
-        moveWindowHorizontal((x) =>
-          Math.max(-(state.windowSize?.width || 0) / 2, x - state.step),
-        ),
+        moveWindowHorizontal((x) => Math.max(-(state.windowSize?.width || 0) / 2, x - state.step)),
       moveWindowRight: () =>
         moveWindowHorizontal((x) =>
-          Math.min(
-            state.screenWidth - (state.windowSize?.width || 0) / 2,
-            x + state.step,
-          ),
+          Math.min(state.screenWidth - (state.windowSize?.width || 0) / 2, x + state.step),
         ),
       moveWindowUp: () => moveWindowVertical((y) => y - state.step),
       moveWindowDown: () => moveWindowVertical((y) => y + state.step),
@@ -578,26 +541,22 @@ async function initializeApp() {
 
     // Initialize auto-updater regardless of environment
     initAutoUpdater();
-    console.log(
-      "Auto-updater initialized in",
-      isDev ? "development" : "production",
-      "mode",
-    );
+    console.log('Auto-updater initialized in', isDev ? 'development' : 'production', 'mode');
   } catch (error) {
-    console.error("Failed to initialize application:", error);
+    console.error('Failed to initialize application:', error);
     app.quit();
   }
 }
 
 // Auth callback handling removed - no longer needed
-app.on("open-url", (event, url) => {
-  console.log("open-url event received:", url);
+app.on('open-url', (event, url) => {
+  console.log('open-url event received:', url);
   event.preventDefault();
 });
 
 // Handle second instance (removed auth callback handling)
-app.on("second-instance", (event, commandLine) => {
-  console.log("second-instance event received:", commandLine);
+app.on('second-instance', (event, commandLine) => {
+  console.log('second-instance event received:', commandLine);
 
   // Focus or create the main window
   if (!state.mainWindow) {
@@ -612,15 +571,15 @@ app.on("second-instance", (event, commandLine) => {
 if (!app.requestSingleInstanceLock()) {
   app.quit();
 } else {
-  app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") {
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
       app.quit();
       state.mainWindow = null;
     }
   });
 }
 
-app.on("activate", () => {
+app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
@@ -631,11 +590,11 @@ function getMainWindow(): BrowserWindow | null {
   return state.mainWindow;
 }
 
-function getView(): "queue" | "solutions" | "debug" {
+function getView(): 'queue' | 'solutions' | 'debug' {
   return state.view;
 }
 
-function setView(view: "queue" | "solutions" | "debug"): void {
+function setView(view: 'queue' | 'solutions' | 'debug'): void {
   state.view = view;
   state.screenshotHelper?.setView(view);
 }
@@ -663,30 +622,28 @@ function getExtraScreenshotQueue(): string[] {
 function clearQueues(): void {
   state.screenshotHelper?.clearQueues();
   state.problemInfo = null;
-  setView("queue");
+  setView('queue');
 }
 
 async function takeScreenshot(): Promise<string> {
-  if (!state.mainWindow) throw new Error("No main window available");
+  if (!state.mainWindow) throw new Error('No main window available');
   return (
     state.screenshotHelper?.takeScreenshot(
       () => hideMainWindow(),
       () => showMainWindow(),
-    ) || ""
+    ) || ''
   );
 }
 
 async function getImagePreview(filepath: string): Promise<string> {
-  return state.screenshotHelper?.getImagePreview(filepath) || "";
+  return state.screenshotHelper?.getImagePreview(filepath) || '';
 }
 
-async function deleteScreenshot(
-  path: string,
-): Promise<{ success: boolean; error?: string }> {
+async function deleteScreenshot(path: string): Promise<{ success: boolean; error?: string }> {
   return (
     state.screenshotHelper?.deleteScreenshot(path) || {
       success: false,
-      error: "Screenshot helper not initialized",
+      error: 'Screenshot helper not initialized',
     }
   );
 }

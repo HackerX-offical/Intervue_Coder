@@ -8,33 +8,33 @@ export const supabase = {
     onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
     signOut: async () => ({ error: null }),
     exchangeCodeForSession: async () => ({ error: null }),
-    signInWithOAuth: async () => ({ data: null, error: null })
+    signInWithOAuth: async () => ({ data: null, error: null }),
   },
   from: () => ({
     select: () => ({
       eq: () => ({
         single: async () => null,
-        maybeSingle: async () => null
-      })
+        maybeSingle: async () => null,
+      }),
     }),
     update: () => ({
       eq: () => ({
         select: () => ({
-          single: async () => null
-        })
-      })
-    })
+          single: async () => null,
+        }),
+      }),
+    }),
   }),
   channel: () => ({
     on: () => ({
       subscribe: () => ({
-        unsubscribe: () => {}
-      })
-    })
-  })
+        unsubscribe: () => {},
+      }),
+    }),
+  }),
 };
 
 export const signInWithGoogle = async () => {
-  console.log("Sign in with Google not available in open-source version");
+  console.log('Sign in with Google not available in open-source version');
   return { data: null };
 };

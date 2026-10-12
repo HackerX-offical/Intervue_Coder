@@ -1,13 +1,11 @@
-import React from "react";
-import { Button } from "./ui/button";
+import React from 'react';
+import { Button } from './ui/button';
 
 interface WelcomeScreenProps {
   onOpenSettings: () => void;
 }
 
-export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
-  onOpenSettings,
-}) => {
+export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onOpenSettings }) => {
   return (
     <div className="bg-black min-h-screen flex flex-col items-center justify-center p-6">
       <div className="max-w-md w-full bg-black border border-white/10 rounded-xl p-6 shadow-lg">
@@ -19,12 +17,10 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         </h1>
 
         <div className="mb-8">
-          <h2 className="text-lg font-medium text-white mb-3">
-            Welcome to Interview Coder
-          </h2>
+          <h2 className="text-lg font-medium text-white mb-3">Welcome to Interview Coder</h2>
           <p className="text-white/70 text-sm mb-4">
-            This application helps you ace technical interviews by providing
-            AI-powered solutions to coding problems.
+            This application helps you ace technical interviews by providing AI-powered solutions to
+            coding problems.
           </p>
           <div className="bg-white/5 border border-white/10 rounded-lg p-4 mb-4">
             <h3 className="text-white/90 font-medium mb-2">Global Shortcuts</h3>
@@ -60,8 +56,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         <div className="bg-white/5 border border-white/10 rounded-lg p-4 mb-6">
           <h3 className="text-white/90 font-medium mb-2">Getting Started</h3>
           <p className="text-white/70 text-sm mb-3">
-            Before using the application, you need to configure your OpenAI API
-            key.
+            Before using the application, you need to configure your OpenAI API key.
           </p>
           <Button
             className="w-full px-4 py-3 bg-white text-black rounded-xl font-medium hover:bg-white/90 transition-colors flex items-center justify-center gap-2"

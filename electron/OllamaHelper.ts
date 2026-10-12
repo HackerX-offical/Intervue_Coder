@@ -13,9 +13,9 @@ export function normalizeOllamaUrls(baseUrl: string): {
   openAiBaseUrl: string;
   apiRoot: string;
 } {
-  const trimmed = (baseUrl || "http://localhost:11434/v1").trim().replace(/\/+$/, "");
-  const withoutV1 = trimmed.replace(/\/v1$/i, "");
-  const apiRoot = withoutV1 || "http://localhost:11434";
+  const trimmed = (baseUrl || 'http://localhost:11434/v1').trim().replace(/\/+$/, '');
+  const withoutV1 = trimmed.replace(/\/v1$/i, '');
+  const apiRoot = withoutV1 || 'http://localhost:11434';
   const openAiBaseUrl = `${apiRoot}/v1`;
   return { openAiBaseUrl, apiRoot };
 }
@@ -27,19 +27,15 @@ export function isLikelyVisionModel(name: string): boolean {
 export async function fetchOllamaModelNames(
   baseUrl?: string,
 ): Promise<{ models: string[]; openAiBaseUrl: string }> {
-  const { apiRoot, openAiBaseUrl } = normalizeOllamaUrls(
-    baseUrl || "http://localhost:11434/v1",
-  );
+  const { apiRoot, openAiBaseUrl } = normalizeOllamaUrls(baseUrl || 'http://localhost:11434/v1');
 
   const response = await fetch(`${apiRoot}/api/tags`, {
-    method: "GET",
-    headers: { Accept: "application/json" },
+    method: 'GET',
+    headers: { Accept: 'application/json' },
   });
 
   if (!response.ok) {
-    throw new Error(
-      `Ollama returned ${response.status}. Is \`ollama serve\` running?`,
-    );
+    throw new Error(`Ollama returned ${response.status}. Is \`ollama serve\` running?`);
   }
 
   const data = (await response.json()) as {
@@ -60,13 +56,11 @@ export function pickOllamaDefaultModels(modelNames: string[]): {
   debuggingModel: string;
 } {
   if (modelNames.length === 0) {
-    return { extractionModel: "", solutionModel: "", debuggingModel: "" };
+    return { extractionModel: '', solutionModel: '', debuggingModel: '' };
   }
 
-  const visionModel =
-    modelNames.find((name) => isLikelyVisionModel(name)) ?? modelNames[0];
-  const textModel =
-    modelNames.find((name) => name !== visionModel) ?? modelNames[0];
+  const visionModel = modelNames.find((name) => isLikelyVisionModel(name)) ?? modelNames[0];
+  const textModel = modelNames.find((name) => name !== visionModel) ?? modelNames[0];
 
   return {
     extractionModel: visionModel,
@@ -91,8 +85,7 @@ export function reconcileOllamaModelSelection(
     return current;
   }
 
-  const pick = (value: string) =>
-    value && modelNames.includes(value) ? value : modelNames[0];
+  const pick = (value: string) => (value && modelNames.includes(value) ? value : modelNames[0]);
 
   return {
     extractionModel: pick(current.extractionModel),

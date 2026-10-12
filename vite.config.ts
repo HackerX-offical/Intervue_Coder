@@ -1,8 +1,8 @@
 // vite.config.ts
-import { defineConfig } from "vite"
-import electron from "vite-plugin-electron"
-import react from "@vitejs/plugin-react"
-import path from "path"
+import { defineConfig } from 'vite';
+import electron from 'vite-plugin-electron';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig({
   plugins: [
@@ -10,49 +10,49 @@ export default defineConfig({
     electron([
       {
         // main.ts
-        entry: "electron/main.ts",
+        entry: 'electron/main.ts',
         vite: {
           build: {
-            outDir: "dist-electron",
+            outDir: 'dist-electron',
             sourcemap: true,
             minify: false,
             rollupOptions: {
-              external: ["electron"]
-            }
-          }
-        }
+              external: ['electron'],
+            },
+          },
+        },
       },
       {
         // preload.ts
-        entry: "electron/preload.ts",
+        entry: 'electron/preload.ts',
         vite: {
           build: {
-            outDir: "dist-electron",
+            outDir: 'dist-electron',
             sourcemap: true,
             rollupOptions: {
-              external: ["electron"]
-            }
-          }
-        }
-      }
-    ])
+              external: ['electron'],
+            },
+          },
+        },
+      },
+    ]),
   ],
-  base: process.env.NODE_ENV === "production" ? "./" : "/",
+  base: process.env.NODE_ENV === 'production' ? './' : '/',
   server: {
     port: 54321,
     strictPort: true,
     watch: {
-      usePolling: true
-    }
+      usePolling: true,
+    },
   },
   build: {
-    outDir: "dist",
+    outDir: 'dist',
     emptyOutDir: true,
-    sourcemap: true
+    sourcemap: true,
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src")
-    }
-  }
-})
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+});
