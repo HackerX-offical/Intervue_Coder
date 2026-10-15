@@ -16,7 +16,7 @@ types. This repo documents that layout for maintainers.
 ## Install
 
 ```bash
-git clone https://github.com/HackerX-offical/Intervue_Coder.git
+git clone https://github.com/HackerX-official/Intervue_Coder.git
 cd Intervue_Coder
 npm install
 ```
