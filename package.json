@@ -206,5 +206,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HackerX-official/Intervue_Coder.git"
+  },
+  "homepage": "https://github.com/HackerX-official/Intervue_Coder#readme",
+  "bugs": {
+    "url": "https://github.com/HackerX-official/Intervue_Coder/issues"
   }
 }
